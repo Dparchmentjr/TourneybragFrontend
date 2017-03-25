@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import AppNavbar from "./AppNavbar"
 import Login from "./Login"
+import SearchPlayer from "./SearchPlayer"
 
 export default class Layout extends React.Component {
   constructor() {
@@ -22,7 +23,8 @@ export default class Layout extends React.Component {
       <div>
 
       <AppNavbar></AppNavbar>
-      <Login></Login>
+      <SearchPlayer></SearchPlayer>
+
 
 
       </div>
