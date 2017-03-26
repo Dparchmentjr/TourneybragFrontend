@@ -5,6 +5,7 @@ import Header from "./Header";
 import AppNavbar from "./AppNavbar"
 import Login from "./Login"
 import SearchPlayer from "./SearchPlayer"
+import SearchTournament from "./SearchTournament"
 
 export default class Layout extends React.Component {
   constructor() {
@@ -23,7 +24,7 @@ export default class Layout extends React.Component {
       <div>
 
       <AppNavbar></AppNavbar>
-      <SearchPlayer></SearchPlayer>
+      <SearchTournament></SearchTournament>
 
 
 
