@@ -3,7 +3,7 @@ import React from "react";
 import  ReactTable  from 'react-table'
 import 'react-table/react-table.css'
 import SearchPlayerFilter from './SearchPlayer/SearchPlayerFilter'
-import { playerSearchResults } from '../mock-data/playerSearchResults'
+import { playerSearchResults } from '../mock-data/PlayerSearchResults'
 
 
 export default class SearchPlayer extends React.Component {
