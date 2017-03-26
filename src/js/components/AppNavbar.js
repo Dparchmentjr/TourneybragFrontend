@@ -17,7 +17,7 @@ export default class AppNavbar extends React.Component {
    <Navbar.Header>
      <Navbar.Brand>
        <Link to="/">
-        <a href="#" style={{color: "#333"}}>TourneyBrag</a>
+        <a href="#" style={{color: "#eee"}}>TourneyBrag</a>
        </Link>
      </Navbar.Brand>
      <Navbar.Toggle />
