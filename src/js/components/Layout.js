@@ -5,7 +5,7 @@ import Header from "./Header";
 import AppNavbar from "./AppNavbar"
 import Login from "./Login"
 import SearchPlayer from "./SearchPlayer";
-import SearchTournaments from "./SearchTournaments";
+import SearchTournament from "./SearchTournament";
 import HomePage from "./HomePage";
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
@@ -27,7 +27,7 @@ export default class Layout extends React.Component {
       <AppNavbar></AppNavbar>
       <Route exact path="/" component={HomePage}></Route>
       <Route path="/search-players" component={SearchPlayer}></Route>
-      <Route path="/search-tournaments" component={SearchTournaments}></Route>
+      <Route path="/search-tournaments" component={SearchTournament}></Route>
       </div>
     );
   }
