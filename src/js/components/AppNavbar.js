@@ -25,14 +25,14 @@ export default class AppNavbar extends React.Component {
    <Navbar.Collapse>
      <Nav>
         <NavItem eventKey={1}>
-          <Link 
-            to="/search-players"
+          <Link
+            to="/SearchPlayer"
             style={{color: "inherit"}}
           >Players</Link>
         </NavItem>
         <NavItem eventKey={2}>
-          <Link 
-            to="/search-tournaments"
+          <Link
+            to="/SearchTournament"
             style={{color: "inherit"}}
             >Tournaments</Link>
         </NavItem>

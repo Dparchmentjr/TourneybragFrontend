@@ -26,8 +26,8 @@ export default class Layout extends React.Component {
       <div>
       <AppNavbar></AppNavbar>
       <Route exact path="/" component={HomePage}></Route>
-      <Route path="/search-players" component={SearchPlayer}></Route>
-      <Route path="/search-tournaments" component={SearchTournament}></Route>
+      <Route path="/SearchPlayer" component={SearchPlayer}></Route>
+      <Route path="/SearchTournament" component={SearchTournament}></Route>
       </div>
     );
   }
