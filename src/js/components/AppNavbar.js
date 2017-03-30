@@ -5,6 +5,8 @@ import { Nav } from "react-bootstrap"
 import { NavItem } from "react-bootstrap"
 import { NavDropdown} from "react-bootstrap"
 import { MenuItem } from "react-bootstrap"
+import Login from "./Login"
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 
 export default class AppNavbar extends React.Component {
 
@@ -14,15 +16,27 @@ export default class AppNavbar extends React.Component {
       <Navbar inverse collapseOnSelect>
    <Navbar.Header>
      <Navbar.Brand>
-       <a href="#">TourneyBrag</a>
+       <Link to="/">
+        <a href="#" style={{color: "#eee"}}>TourneyBrag</a>
+       </Link>
      </Navbar.Brand>
      <Navbar.Toggle />
    </Navbar.Header>
    <Navbar.Collapse>
      <Nav>
-       <NavItem eventKey={1} href="#">Profile</NavItem>
-       <NavItem eventKey={2} href="#">Players</NavItem>
-       <NavItem eventKey={1} href="#">Tournaments</NavItem>
+        <NavItem eventKey={1}>
+          <Link 
+            to="/search-players"
+            style={{color: "inherit"}}
+          >Players</Link>
+        </NavItem>
+        <NavItem eventKey={2}>
+          <Link 
+            to="/search-tournaments"
+            style={{color: "inherit"}}
+            >Tournaments</Link>
+        </NavItem>
+       <Login></Login>
      </Nav>
    </Navbar.Collapse>
  </Navbar>

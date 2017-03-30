@@ -1,53 +1,51 @@
 import React from "react";
-
-import { FormGroup } from "react-bootstrap"
-import { ControlLabel } from "react-bootstrap"
-import { FormControl } from "react-bootstrap"
-import { HelpBlock } from "react-bootstrap"
-
+import ReactDOM from "react-dom";
+import {Button} from "react-bootstrap";
+import {Form, FormControl, FormControlFeedback, FormControlStatic, FormGroup, HelpBlock} from "react-bootstrap"
+import {Modal, ModalDialog, ModalFooter, ModalHeader, ModalTitle} from "react-bootstrap";
+import {Nav, Navbar, NavbarBrand, NavbarCollapse, NavbarHeader, NavbarToggle, NavDropdown, NavItem} from "react-bootstrap"
+import LoginForm from "./Login/LoginForm"
 export default class Login extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            showModal: false
+        }
+        this.open = this.open.bind(this);
+        this.close = this.close.bind(this);
+    }
 
-  constructor() {
-    super();
-    this.state = {
-      value: "",
-    };
-  }
+    open() {
+        this.setState({
+            showModal: true
+        });
+    }
 
-  getValidationState() {
-   const length = this.state.value.length;
-   if (length > 10) return 'success';
-   else if (length > 5) return 'warning';
-   else if (length > 0) return 'error';
- }
+    close() {
+        this.setState({
+            showModal: false
+        });
+    }
 
- handleChange(e) {
-   var value = e.target.value
-   this.setState({ value });
- }
-
- render() {
-    return (
-      <div>
-      <form>
-        <FormGroup
-          controlId="formBasicText"
-          validationState={this.getValidationState()}
-        >
-          <ControlLabel>Working example with validation</ControlLabel>
-          <FormControl
-            type="text"
-            value={this.state.value}
-            placeholder="Enter text"
-            onChange={this.handleChange.bind(this)}
-          />
-          <FormControl.Feedback />
-          <HelpBlock>Validation is based on string length.</HelpBlock>
-        </FormGroup>
-      </form>
-      </div>
-    );
-  }
-
+    render() {
+        return(
+            <Navbar.Form pullLeft>
+                <FormGroup>
+                    <Button onClick={this.open}>Login</Button>
+                </FormGroup>
+                <Modal show={this.state.showModal} onHide={this.close}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Login to TourneyBrag</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <LoginForm></LoginForm>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button onClick={this.close}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
+            </Navbar.Form>
+        );
+    }
 
 }
