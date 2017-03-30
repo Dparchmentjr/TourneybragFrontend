@@ -21,10 +21,9 @@ export default class SearchPlayer extends React.Component {
 
 
   filterTable(row) {
-      return (row.username.toLowerCase().startsWith(this.state.nameFilter.toLowerCase())
-      || this.state.nameFilter.toLowerCase() == "")
-      && (row.description.startsWith(this.state.descriptionFilter.toLowerCase())
-      || this.state.descriptionFilter.toLowerCase() == "")
+      return (row.username.toLowerCase().startsWith(this.state.nameFilter.toLowerCase()) || this.state.nameFilter.toLowerCase() == "")
+      &&
+      (row.description.toLowerCase().startsWith(this.state.descriptionFilter.toLowerCase()) || this.state.descriptionFilter.toLowerCase() == "")
   }
 
   render() {
