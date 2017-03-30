@@ -28,7 +28,6 @@ export default class SearchPlayer extends React.Component {
 
   render() {
     let displayPlayer = this.state.players.filter(x => this.filterTable(x))
-
     return (
       <div>
         <SearchPlayerFilter handleFilterUpdate={this.handleFilterUpdate}>

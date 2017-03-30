@@ -36,6 +36,12 @@ export default class AppNavbar extends React.Component {
             style={{color: "inherit"}}
             >Tournaments</Link>
         </NavItem>
+        <NavItem eventKey={3}>
+          <Link
+            to="/Profile"
+            style={{color: "inherit"}}
+            >Profile</Link>
+        </NavItem>
        <Login></Login>
      </Nav>
    </Navbar.Collapse>
