@@ -12,7 +12,10 @@ export let profiles = [
         {name: "Best Man Wins Tourney", organizer: "DanePrettyCoolMan", date: "2017-03-22"},
         {name: "BrawlBash", organizer: "SlyGuySean", date: "2017-02-21"},
         {name: "SmashTourney", organizer: "ItsaMauricle", date: "2017-03-22"}],
-      fans: [{name: "ItsaMauricle"}, {name: "SlyGuySean"}, name: "DanePrettyCoolMan"]
+      fans: [{name: "ItsaMauricle"}, {name: "SlyGuySean"}, name: "DanePrettyCoolMan"],
+      comments: [{author: 'DanePrettyCoolMan', content: 'Good job winning the tournament!'},
+    {author: 'SlyGuySean', content: 'Good fight last tournament.'},
+  {author: 'ItsaMauricle', content: 'Better luck next time ked.'}]
       },
 
 

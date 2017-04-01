@@ -6,7 +6,10 @@ import { ControlLabel } from "react-bootstrap"
 import { FormControl } from "react-bootstrap"
 import { Col } from "react-bootstrap"
 import  { profiles } from "../mock-data/Profiles"
+import update from 'immutability-helper'
 import ReactTable from "react-table"
+import  CommentList  from "./CommentList"
+import WriteComment from "./WriteComment"
 
 export default class Profile extends React.Component {
 
@@ -23,11 +26,18 @@ export default class Profile extends React.Component {
     };
   }
 
+  //Yes this can be done with array.push, but immutability cmawl.
+  handleAddComment = (comment) => {
+    let updatedProfile = update(this.state.profile,
+      {comments: {$push: [{author: 'AlexThyMan', content: comment}]}})
+    this.setState({profile: updatedProfile})
+
+  }
+
  render() {
    let gamePlays = this.state.profile.gamePlays
    let tourneysPlayed = this.state.profile.tourneysPlayed
    let fans = this.state.profile.fans
-
     return (
       <div>
           <Col xs={6} xsPush={3}
@@ -76,6 +86,8 @@ export default class Profile extends React.Component {
                 defaultPageSize={fans.length}
                 data={fans}
                 columns={[{header: 'Fan name', accessor: 'name'}]}/>
+              <CommentList list={this.state.profile.comments}></CommentList>
+              <WriteComment addComment={this.handleAddComment}></WriteComment>
           </Col>
       </div>
 
