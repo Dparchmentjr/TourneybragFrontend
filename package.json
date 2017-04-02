@@ -16,6 +16,7 @@
     "immutability-helper": "^2.1.2",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.8",
+    "react-bracket": "0.0.4",
     "react-dom": "^15.4.2",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",

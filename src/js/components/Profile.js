@@ -26,7 +26,7 @@ export default class Profile extends React.Component {
     };
   }
 
-  //Yes this can be done with array.push, but immutability cmawl.
+
   handleAddComment = (comment) => {
     let updatedProfile = update(this.state.profile,
       {comments: {$push: [{author: 'AlexThyMan', content: comment}]}})
