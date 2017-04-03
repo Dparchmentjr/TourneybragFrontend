@@ -5,7 +5,7 @@ import { FormGroup } from "react-bootstrap"
 import { ControlLabel } from "react-bootstrap"
 import { FormControl } from "react-bootstrap"
 import { Col } from "react-bootstrap"
-import  { profiles } from "../mock-data/Profiles"
+import  { profiles } from "../mock-data/profiles"
 import update from 'immutability-helper'
 import ReactTable from "react-table"
 import  CommentList  from "./CommentList"

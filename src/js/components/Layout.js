@@ -7,7 +7,6 @@ import HomePage from "./HomePage";
 import Profile from "./Profile";
 import Tournament from "./Tournament"
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import {Route} from 'react-router-dom';
 
 export default class Layout extends React.Component {
   constructor() {
