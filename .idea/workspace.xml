@@ -2,16 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7fba9dae-a56c-4a8c-850b-a5f2a9a23ff0" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/js/components/Login/LoggedInStrip.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/js/components/Login/LoginForm.js" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/client.js" afterPath="$PROJECT_DIR$/src/js/client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/components/AppNavbar.js" afterPath="$PROJECT_DIR$/src/js/components/AppNavbar.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/components/HomePage.js" afterPath="$PROJECT_DIR$/src/js/components/HomePage.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/components/Layout.js" afterPath="$PROJECT_DIR$/src/js/components/Layout.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/components/Login.js" afterPath="$PROJECT_DIR$/src/js/components/Login.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/mock-data/profiles.js" afterPath="$PROJECT_DIR$/src/js/mock-data/profiles.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/webpack.config.js" afterPath="$PROJECT_DIR$/webpack.config.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -41,7 +34,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LoggedInStrip.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LoggedInStrip.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/js/components/Login/LoggedInStrip.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="444">
@@ -53,24 +46,22 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/package.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="367">
+              <caret line="26" column="28" lean-forward="false" selection-start-line="26" selection-start-column="28" selection-end-line="26" selection-end-column="28" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="profiles.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/js/mock-data/profiles.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="494">
               <caret line="19" column="54" lean-forward="false" selection-start-line="19" selection-start-column="54" selection-end-line="19" selection-end-column="54" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="client.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/js/client.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="17" column="66" lean-forward="false" selection-start-line="17" selection-start-column="66" selection-end-line="17" selection-end-column="66" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -173,7 +164,6 @@
         <option value="$PROJECT_DIR$/src/js/components/Login/LoginModal.js" />
         <option value="$PROJECT_DIR$/src/js/components/Login.js" />
         <option value="$PROJECT_DIR$/src/js/components/Login/Validator.js" />
-        <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/js/components/Login/Validation.js" />
         <option value="$PROJECT_DIR$/src/js/actions/types.js" />
         <option value="$PROJECT_DIR$/src/js/reducers/rootReducer.js" />
@@ -191,6 +181,7 @@
         <option value="$PROJECT_DIR$/src/js/components/Signup.js" />
         <option value="$PROJECT_DIR$/src/js/components/AppNavbar.js" />
         <option value="$PROJECT_DIR$/src/js/components/Login/LoggedInStrip.js" />
+        <option value="$PROJECT_DIR$/package.json" />
       </list>
     </option>
   </component>
@@ -468,15 +459,16 @@
       <workItem from="1490967818632" duration="17049000" />
       <workItem from="1491084613468" duration="8370000" />
       <workItem from="1491148743562" duration="14685000" />
-      <workItem from="1491232694634" duration="694000" />
+      <workItem from="1491232694634" duration="1096000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59708000" />
+    <option name="totallyTimeSpent" value="60110000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1096" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25184405" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
@@ -572,7 +564,7 @@
         <state relative-caret-position="130">
           <caret line="5" column="31" lean-forward="false" selection-start-line="5" selection-start-column="31" selection-end-line="5" selection-end-column="31" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#0#26#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -609,7 +601,7 @@
         <state relative-caret-position="156">
           <caret line="10" column="16" lean-forward="true" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#0#26#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -725,14 +717,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="23" column="34" lean-forward="false" selection-start-line="23" selection-start-column="34" selection-end-line="23" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/validator/validator.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="230">
@@ -839,7 +823,7 @@
         <state relative-caret-position="208">
           <caret line="17" column="66" lean-forward="false" selection-start-line="17" selection-start-column="66" selection-end-line="17" selection-end-column="66" />
           <folding>
-            <element signature="e#0#26#0" expanded="true" />
+            <element signature="e#0#26#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -927,6 +911,14 @@
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="26" column="28" lean-forward="false" selection-start-line="26" selection-start-column="28" selection-end-line="26" selection-end-column="28" />
+          <folding />
         </state>
       </provider>
     </entry>
