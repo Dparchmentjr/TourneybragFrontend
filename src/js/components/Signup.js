@@ -6,36 +6,29 @@
  @desc This component handles the controls for the login modal.
  ----------------------------------------------------------------------*/
 import React from "react";
-import LoginModal from "./Login/LoginModal";
 import {Button, Navbar} from "react-bootstrap";
-export default class Login extends React.Component {
+export default class Signup extends React.Component {
     constructor() {
         super();
-        this.state = {
-            showLogin: false
-        }
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick() {
-        this.setState({showLogin: true});
+        alert("We are signing you up for an account!");
     }
 
     render() {
         return (
             <Navbar.Form pullRight>
-                <Button onClick={this.handleClick} style={styles.loginButton}>Login</Button>
-                <LoginModal
-                    show={this.state.showLogin}
-                    hide={() => {this.setState({showLogin: false})}}/>
+                <Button onClick={this.handleClick} style={styles.signupButton}>Signup. It's Free!</Button>
             </Navbar.Form>
         );
     }
 }
 
 const styles = {
-    loginButton: {
-        backgroundColor: "#e74c3c",
+    signupButton: {
+        backgroundColor: "#3498db",
         color: "#ecf0f1",
         border: "none"
     }

@@ -1,13 +1,10 @@
 import React from "react";
 
-import Footer from "./Footer";
-import Header from "./Header";
 import AppNavbar from "./AppNavbar"
-import Login from "./Login"
 import SearchPlayer from "./SearchPlayer";
 import SearchTournament from "./SearchTournament";
 import HomePage from "./HomePage";
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {Route} from 'react-router-dom';
 
 export default class Layout extends React.Component {
   constructor() {
@@ -28,6 +25,7 @@ export default class Layout extends React.Component {
       <Route exact path="/" component={HomePage}></Route>
       <Route path="/search-players" component={SearchPlayer}></Route>
       <Route path="/search-tournaments" component={SearchTournament}></Route>
+      {this.props.children}
       </div>
     );
   }

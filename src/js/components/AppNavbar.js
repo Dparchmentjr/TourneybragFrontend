@@ -3,14 +3,38 @@ import React from "react";
 import { Navbar } from "react-bootstrap"
 import { Nav } from "react-bootstrap"
 import { NavItem } from "react-bootstrap"
-import { NavDropdown} from "react-bootstrap"
-import { MenuItem } from "react-bootstrap"
-import Login from "./Login"
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import Login from "./Login";
+import Signup from "./Signup";
+import {Button} from "react-bootstrap";
+import LoggedInStrip from "./Login/LoggedInStrip";
+import {connect} from "react-redux";
+import {logout} from "../actions/LoginAction";
 
-export default class AppNavbar extends React.Component {
+class AppNavbar extends React.Component {
+    constructor() {
+        super();
+        this.logout = this.logout.bind(this);
+    }
+
+    logout() {
+        this.props.logout();
+    }
 
   render() {
+      const {isAuthenticated} = this.props.auth;
+      const guestLinks = (
+          <div>
+          <Login></Login>
+          <Signup></Signup>
+          </div>
+      );
+
+      const userLinks = (
+          <div>
+              <LoggedInStrip/>
+          </div>
+      )
     return (
       <div>
       <Navbar inverse collapseOnSelect>
@@ -25,19 +49,13 @@ export default class AppNavbar extends React.Component {
    <Navbar.Collapse>
      <Nav>
         <NavItem eventKey={1}>
-          <Link 
-            to="/search-players"
-            style={{color: "inherit"}}
-          >Players</Link>
+          <Link to="/search-players" style={{color: "inherit"}}>Players</Link>
         </NavItem>
         <NavItem eventKey={2}>
-          <Link 
-            to="/search-tournaments"
-            style={{color: "inherit"}}
-            >Tournaments</Link>
+          <Link to="/search-tournaments" style={{color: "inherit"}}>Tournaments</Link>
         </NavItem>
-       <Login></Login>
      </Nav>
+       {isAuthenticated ? userLinks : guestLinks}
    </Navbar.Collapse>
  </Navbar>
  </div>
@@ -45,3 +63,16 @@ export default class AppNavbar extends React.Component {
     );
   }
 }
+
+AppNavbar.PropTypes = {
+    auth: React.PropTypes.object.isRequired,
+    logout: React.PropTypes.func.isRequired
+}
+
+function mapStateToProps(state) {
+    return {
+        auth: state.auth
+    };
+}
+
+export default connect(mapStateToProps, { logout })(AppNavbar);
