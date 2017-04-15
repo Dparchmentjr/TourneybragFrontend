@@ -70,7 +70,7 @@ class AppNavbar extends React.Component {
         </NavItem>
         <NavItem eventKey={3}>
           <Link
-            to="/Profile"
+            to="/Profile/"
             style={{color: "inherit"}}
             >Profile</Link>
         </NavItem>

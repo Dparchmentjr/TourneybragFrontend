@@ -4,35 +4,42 @@ import  ReactTable  from 'react-table'
 import 'react-table/react-table.css'
 import SearchTournamentFilter from './SearchTournament/SearchTournamentFilter'
 import { tournamentSearchResults } from '../mock-data/TournamentSearchResults'
-
+import axios from 'axios'
 
 export default class SearchTournament extends React.Component {
   constructor() {
     super();
     this.state = {
-      tournaments: tournamentSearchResults,
-      nameFilter: '',
-      organizerFilter: '',
-      dateFilter: ''
+      tournaments: tournamentSearchResults
     };
   }
 
-  handleFilterUpdate = (nameVal, organizerVal, dateVal) => {
-    this.setState({nameFilter: nameVal,
-      organizerFilter: organizerVal,
-      dateFilter: dateVal})}
+  componentDidMount() {
 
+    this.getTournaments('','','')
 
-  filterTable(row) {
-      return (row.name.toLowerCase().startsWith(this.state.nameFilter.toLowerCase()) || this.state.nameFilter.toLowerCase() == "")
-      &&
-      (row.organizer.toLowerCase().startsWith(this.state.organizerFilter.toLowerCase()) || this.state.organizerFilter.toLowerCase() == "")
-      &&
-      (row.date.toLowerCase().startsWith(this.state.dateFilter.toLowerCase()) || this.state.dateFilter.toLowerCase() == "")
   }
 
+  getTournaments(nameVal, orgVal, dateVal) {
+    axios.post('https://django.sean-monroe.com/list-tournaments', {
+            name: nameVal,
+            organizer: orgVal,
+            date: dateVal
+          })
+          .then( response => {
+              this.setState({tournaments: response.data.tournaments})
+          })
+
+  }
+
+  handleFilterUpdate = (nameVal, organizerVal, dateVal) => {
+
+    this.getTournaments(nameVal, organizerVal, dateVal)
+
+    }
+
   render() {
-    let displayTournament = this.state.tournaments.filter(x => this.filterTable(x))
+    let displayTournament = this.state.tournaments
 
     return (
       <div>
@@ -40,10 +47,22 @@ export default class SearchTournament extends React.Component {
         </SearchTournamentFilter>
         <ReactTable
           data={displayTournament}
-          columns={[{header: 'Name', accessor: 'name'},
-          {header: 'Organizer', accessor: 'organizer'},
-          {header: 'Start Date', accessor: 'date'}]}/>
+          columns={[{header: 'Name', accessor: 'tournamentTitle'},
+          {header: 'Organizer', accessor: 'organizerOwner'},
+          {header: 'Start Date', accessor: 'date_start'}]}
+          getTdProps={(state, rowInfo, column, instance) => {
+              return {
+                onClick: e => {
+                  this.context.router.history.push('Tournament/' 
+                  + rowInfo.row.tournamentTitle);
+                }
+              }
+            }}/>
       </div>
     );
   }
+}
+
+SearchTournament.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }

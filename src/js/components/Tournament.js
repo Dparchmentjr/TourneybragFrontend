@@ -14,6 +14,8 @@ import  EditableList from './Tournament/EditableList'
 import CommentList from './CommentList'
 import WriteComment from './WriteComment'
 import update from 'immutability-helper'
+import axios from 'axios'
+
 export default class Tournament extends React.Component {
 
   constructor() {
@@ -32,6 +34,20 @@ export default class Tournament extends React.Component {
         marginBottom: "1%"},
 
     };
+  }
+
+  componentDidMount() {
+    let tourneyName = this.context.router.route.location.pathname.split('/')[2]
+    this.getTournament(tourneyName)
+    console.log('got tournament')
+  }
+
+
+
+  getTournament = (name) => {
+    axios.get('http://django.sean-monroe.com/tournamentpage?' + name).
+    then( response => this.setState({tournamentInfo: response.data}))
+
   }
 
   changeParticipantName = (e) => {this.setState({participantName: e.target.value})}
@@ -64,8 +80,9 @@ export default class Tournament extends React.Component {
 
   handleAddComment = (comment) => {
     let updatedTournament = update(this.state.tournamentInfo,
-      {comments: {$push: [{author: 'AlexThyMan', content: comment}]}})
+      {comments: {$push: [{author_name: 'AlexThyMan', actual_comment: comment}]}})
     this.setState({tournamentInfo: updatedTournament})
+    console.log(this.state.tournamentInfo)
 
   }
 
@@ -176,6 +193,8 @@ export default class Tournament extends React.Component {
       </div>
     );
   }
+}
 
-
+Tournament.contextTypes = {
+    router: React.PropTypes.object
 }

@@ -10,6 +10,7 @@ import update from 'immutability-helper'
 import ReactTable from "react-table"
 import  CommentList  from "./CommentList"
 import WriteComment from "./WriteComment"
+import axios from 'axios'
 
 export default class Profile extends React.Component {
 
@@ -26,15 +27,30 @@ export default class Profile extends React.Component {
     };
   }
 
+  componentDidMount() {
+
+    let username = this.context.router.route.location.pathname.split('/')[2]
+    this.getProfile(username)
+
+  }
+
+
+
+  getProfile = (username) => {
+    axios.get('http://django.sean-monroe.com/playerpage?' + username).
+    then( response => this.setState({profile: response.data}))
+
+  }
 
   handleAddComment = (comment) => {
     let updatedProfile = update(this.state.profile,
-      {comments: {$push: [{author: 'AlexThyMan', content: comment}]}})
+      {comments: {$push: [{author_name: 'AlexThyMan', actual_comment: comment}]}})
     this.setState({profile: updatedProfile})
 
   }
 
  render() {
+
    let gamePlays = this.state.profile.gamePlays
    let tourneysPlayed = this.state.profile.tourneysPlayed
    let fans = this.state.profile.fans
@@ -78,9 +94,9 @@ export default class Profile extends React.Component {
               <ReactTable style= {this.state.tableStyle}
                 defaultPageSize={tourneysPlayed.length}
                 data={tourneysPlayed}
-                columns={[{header: 'Tournament name', accessor: 'name'},
-                {header: 'Organizer', accessor: 'organizer'},
-                {header: 'Date', accessor: 'date'}]}/>
+                columns={[{header: 'Tournament name', accessor: 'tournament_entered'},
+                /*{header: 'Organizer', accessor: 'organizer'},
+                {header: 'Date', accessor: 'date'}*/]}/>
             <h4>My fans</h4>
               <ReactTable style= {this.state.tableStyle}
                 defaultPageSize={fans.length}
@@ -95,4 +111,8 @@ export default class Profile extends React.Component {
   }
 
 
+}
+
+Profile.contextTypes = {
+    router: React.PropTypes.object
 }

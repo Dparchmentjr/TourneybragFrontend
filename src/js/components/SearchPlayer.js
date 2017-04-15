@@ -4,7 +4,7 @@ import  ReactTable  from 'react-table'
 import 'react-table/react-table.css'
 import SearchPlayerFilter from './SearchPlayer/SearchPlayerFilter'
 import { playerSearchResults } from '../mock-data/PlayerSearchResults'
-
+import { withRouter } from 'react-router-dom'
 
 export default class SearchPlayer extends React.Component {
   constructor() {
@@ -35,8 +35,19 @@ export default class SearchPlayer extends React.Component {
         <ReactTable
           data={displayPlayer}
           columns={[{header: 'Name', accessor: 'username'},
-          {header: 'Description', accessor: 'description'}]}/>
+          {header: 'Description', accessor: 'description'}]}
+          getTdProps={(state, rowInfo, column, instance) => {
+              return {
+                onClick: e => {
+                  this.context.router.history.push('Profile/' + rowInfo.row.username);
+                }
+              }
+            }}/>
       </div>
     );
   }
+}
+
+SearchPlayer.contextTypes = {
+  router: React.PropTypes.object.isRequired
 }

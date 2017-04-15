@@ -27,8 +27,8 @@ export default class Layout extends React.Component {
       <Route exact path="/" component={HomePage}></Route>
 		{/*<Route path="/SearchPlayer" component={SearchPlayer}></Route>*/}
 		{/*<Route path="/SearchTournament" component={SearchTournament}></Route>*/}
-      <Route path="/Profile" component={Profile}></Route>
-      <Route path="/Tournament" component={Tournament}></Route>
+      <Route path="/Profile/*" component={Profile}></Route>
+      <Route path="/Tournament/*" component={Tournament}></Route>
       <Route path="/search-players" component={SearchPlayer}></Route>
       <Route path="/search-tournaments" component={SearchTournament}></Route>
       {this.props.children}

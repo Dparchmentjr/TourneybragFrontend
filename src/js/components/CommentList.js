@@ -15,7 +15,7 @@ export default class CommentList extends React.Component {
  render() {
 
    let list = this.props.list.map( comment => {
-     return <Comment author={comment.author} content={comment.content}></Comment>
+     return <Comment author={comment.author_name} content={comment.actual_comment}></Comment>
    })
 
 
