@@ -29,7 +29,7 @@ module.exports = {
       loader: "url?limit=10000&mimetype=application/octet-stream"},
       {
       test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-      loader: "file"}, 
+      loader: "file"},
       {
       test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
       loader: "url?limit=10000&mimetype=image/svg+xml"}
@@ -42,7 +42,10 @@ module.exports = {
   plugins: debug ? [] : [
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
+    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false,
+      compress: {
+          warnings: false
+      } }),
   ],
   node: {
     net: "empty",

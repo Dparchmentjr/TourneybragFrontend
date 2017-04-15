@@ -12,7 +12,8 @@ export default class SearchPlayerFilter extends React.Component {
     super();
     this.state = {
       nameValue: "",
-      descriptionValue : ""
+      descriptionValue : "",
+      typeValue: ""
     };
   }
 
@@ -20,8 +21,10 @@ export default class SearchPlayerFilter extends React.Component {
 
   changeDescription = (e) => this.setState({descriptionValue: e.target.value})
 
+  changeType = (e) => this.setState({typeValue: e.target.value})
+
   changeFilter = () => this.props.handleFilterUpdate(
-    this.state.nameValue, this.state.descriptionValue)
+    this.state.nameValue, this.state.descriptionValue, this.state.typeValue)
 
   render() {
 
@@ -30,7 +33,7 @@ export default class SearchPlayerFilter extends React.Component {
       <Navbar>
     <Navbar.Header>
       <Navbar.Brand >
-        <a href="#">Search Players</a>
+        <a href="#">Search Users</a>
       </Navbar.Brand>
       <Navbar.Toggle />
     </Navbar.Header>
@@ -44,6 +47,11 @@ export default class SearchPlayerFilter extends React.Component {
           <FormControl type="text" placeholder="Search description"
             value={this.state.descriptionValue}
             onChange={this.changeDescription}/>
+        </FormGroup>
+        <FormGroup style={{marginRight: "5%"}}>
+          <FormControl type="text" placeholder="Search account type"
+            value={this.state.typeValue}
+            onChange={this.changeType}/>
         </FormGroup>
         {' '}
         <Button type="submit" onClick={this.changeFilter}>Submit</Button>

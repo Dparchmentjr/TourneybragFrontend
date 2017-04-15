@@ -5,41 +5,54 @@ import 'react-table/react-table.css'
 import SearchPlayerFilter from './SearchPlayer/SearchPlayerFilter'
 import { playerSearchResults } from '../mock-data/PlayerSearchResults'
 import { withRouter } from 'react-router-dom'
+import axios from 'axios'
 
 export default class SearchPlayer extends React.Component {
   constructor() {
     super();
     this.state = {
-      players: playerSearchResults,
-      nameFilter: '',
-      descriptionFilter: ''
+      users: [],
     };
   }
 
-  handleFilterUpdate = (nameValue, descriptionValue) => {
-    this.setState({nameFilter: nameValue, descriptionFilter: descriptionValue})}
+  componentDidMount() {
 
+    this.getUsers('','','')
 
-  filterTable(row) {
-      return (row.username.toLowerCase().startsWith(this.state.nameFilter.toLowerCase()) || this.state.nameFilter.toLowerCase() == "")
-      &&
-      (row.description.toLowerCase().startsWith(this.state.descriptionFilter.toLowerCase()) || this.state.descriptionFilter.toLowerCase() == "")
   }
 
+  getUsers(nameVal, descVal, typeVal) {
+    axios.post('https://django.sean-monroe.com/list-users', {
+            username: nameVal,
+            description: descVal,
+            acctType: typeVal
+          })
+          .then( response => {
+              this.setState({users: response.data.users})
+          })
+
+  }
+
+
+  handleFilterUpdate = (nameVal, descVal, typeVal) => {
+      this.getUsers(nameVal, descVal, typeVal)
+    }
+
   render() {
-    let displayPlayer = this.state.players.filter(x => this.filterTable(x))
+    let displayUser = this.state.users
     return (
       <div>
         <SearchPlayerFilter handleFilterUpdate={this.handleFilterUpdate}>
         </SearchPlayerFilter>
         <ReactTable
-          data={displayPlayer}
+          data={displayUser}
           columns={[{header: 'Name', accessor: 'username'},
-          {header: 'Description', accessor: 'description'}]}
+          {header: 'Description', accessor: 'description'},
+          {header: 'Account Type', accessor: 'acctType'}]}
           getTdProps={(state, rowInfo, column, instance) => {
               return {
                 onClick: e => {
-                  this.context.router.history.push('Profile/' + rowInfo.row.username);
+                  this.context.router.history.push(`Profile/${rowInfo.row.username}?${rowInfo.row.acctType}`);
                 }
               }
             }}/>

@@ -68,18 +68,6 @@ class AppNavbar extends React.Component {
         <NavItem eventKey={2}>
           <Link to="/search-tournaments" style={{color: "inherit"}}>Tournaments</Link>
         </NavItem>
-        <NavItem eventKey={3}>
-          <Link
-            to="/Profile/"
-            style={{color: "inherit"}}
-            >Profile</Link>
-        </NavItem>
-        <NavItem eventKey={4}>
-          <Link
-            to="/Tournament"
-            style={{color: "inherit"}}
-            >Tournament</Link>
-        </NavItem>
 {/*       <Login></Login>	*/}
      </Nav>
        {isAuthenticated ? userLinks : guestLinks}
