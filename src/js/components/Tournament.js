@@ -23,6 +23,7 @@ export default class Tournament extends React.Component {
     this.state = {
 
       tournamentInfo : tournament,
+      user: JSON.parse(localStorage.getItem('user')).username,
       participantName: '',
       tournamentStarted: false,
       roundInfo: '',
@@ -39,13 +40,12 @@ export default class Tournament extends React.Component {
   componentDidMount() {
     let tourneyName = this.context.router.route.location.pathname.split('/')[2]
     this.getTournament(tourneyName)
-    console.log('got tournament')
   }
 
 
 
   getTournament = (name) => {
-    axios.get('http://django.sean-monroe.com/tournamentpage?' + name).
+    axios.get('https://django.sean-monroe.com/tournamentpage?' + name).
     then( response => this.setState({tournamentInfo: response.data}))
 
   }
@@ -78,11 +78,18 @@ export default class Tournament extends React.Component {
 
   handleEditTournament = () => {this.setState({inputDisabled : !this.state.inputDisabled})}
 
-  handleAddComment = (comment) => {
-    let updatedTournament = update(this.state.tournamentInfo,
-      {comments: {$push: [{author_name: 'AlexThyMan', actual_comment: comment}]}})
-    this.setState({tournamentInfo: updatedTournament})
-    console.log(this.state.tournamentInfo)
+  handleAddComment = (comment_send) => {
+    axios.post('https://django.sean-monroe.com/comment',
+    {
+      author: this.state.user,
+      receiver: this.state.tournamentInfo.name,
+      comment: comment_send
+
+    }).then( () => {
+            let updatedTournament = update(this.state.tournamentInfo,
+              {comments: {$push: [{author_name: this.state.user,
+               actual_comment: comment_send}]}})
+            this.setState({tournamentInfo: updatedTournament})})
 
   }
 

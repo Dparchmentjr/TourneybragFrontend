@@ -17,7 +17,6 @@ export default class Comment extends React.Component {
 
  render() {
    let author = this.props.author
-   console.log(author)
 
     return (
       <div>

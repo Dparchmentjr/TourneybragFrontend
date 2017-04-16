@@ -19,6 +19,7 @@ export default class Profile extends React.Component {
     super();
     this.state = {
       profile: null,
+      user: JSON.parse(localStorage.getItem('user')).username,
       borderStyle : {border: "1px solid LightGray", borderRadius: "5px",
         padding: "1%", background: " #e6ffff"},
       formControlStyle : {background: "#ffffff", cursor: "default",
@@ -39,18 +40,16 @@ export default class Profile extends React.Component {
 
   getProfile = (username, usertype) => {
     if(usertype == 'player') {
-        axios.get('http://django.sean-monroe.com/playerpage?' + username).
+        axios.get('https://django.sean-monroe.com/playerpage?' + username).
         then( response => {
           this.setState({profile: response.data})
-          let user = JSON.parse(localStorage.getItem('user')).username
-          user == response.data.username ? this.setState({isOwnProfile : true}) : null})
+          this.state.user == response.data.username ? this.setState({isOwnProfile : true}) : null})
     }
     else if (usertype == 'organizer'){
-      axios.get('http://django.sean-monroe.com/organizerpage?' + username).
+      axios.get('https://django.sean-monroe.com/organizerpage?' + username).
       then( response => {
         this.setState({profile: response.data})
-        let user = JSON.parse(localStorage.getItem('user')).username
-        user == response.data.username ? this.setState({isOwnProfile : true}) : null})
+        this.state.user == response.data.username ? this.setState({isOwnProfile : true}) : null})
     }
 
   }
@@ -61,10 +60,19 @@ export default class Profile extends React.Component {
     this.setState({profile: updatedProfile})
   }
 
-  handleAddComment = (comment) => {
-    let updatedProfile = update(this.state.profile,
-      {comments: {$push: [{author_name: 'AlexThyMan', actual_comment: comment}]}})
-    this.setState({profile: updatedProfile})
+  handleAddComment = (comment_send) => {
+    axios.post('https://django.sean-monroe.com/comment',
+    {
+      author: this.state.user,
+      receiver: this.state.profile.username,
+      comment: comment_send
+
+    }).then( () => {
+                let updatedProfile = update(this.state.profile,
+                  {comments:
+                    {$push: [{author_name: this.state.user, actual_comment: comment_send}]}})
+                this.setState({profile: updatedProfile})})
+
 
   }
 
@@ -82,6 +90,68 @@ export default class Profile extends React.Component {
       return ''
     }
   }
+
+  becomeFan = () => {
+    axios.post('https://django.sean-monroe.com/fan',
+    {
+      user_Fan: this.state.user,
+      user_Idol: this.state.profile.username
+
+    }).then(() => {
+        let updatedProfile = update(this.state.profile,
+          {fans: {$push: [{user_Fan : this.state.user}]}})
+        this.setState({profile: updatedProfile})
+      })
+  }
+
+  isAlreadyFan = () => {
+    for(let fan of this.state.profile.fans) {
+      if(fan.user_Fan == this.state.user)
+        return true
+    }
+    return false
+  }
+
+  becomeVoucher = () => {
+    axios.post('https://django.sean-monroe.com/voucher',
+    {
+      user_voucher: this.state.user,
+      user_receiver: this.state.profile.username
+
+    }).then(() => {
+        let updatedProfile = update(this.state.profile,
+          {vouchers: {$push: [{user_voucher : this.state.user}]}})
+        this.setState({profile: updatedProfile})
+      })
+  }
+
+  isAlreadyVoucher = () => {
+    for(let voucher of this.state.profile.vouchers) {
+      if(voucher.user_voucher == this.state.user)
+        return true
+    }
+    return false
+  }
+
+  showFanOrVouchButton = () => {
+    if(!this.state.isOwnProfile) {
+      if(this.state.profile.acctType == 'player'
+      && !this.isAlreadyFan()) {
+        return <Button bsStyle='primary' onClick={this.becomeFan}>
+                 Become a fan
+               </Button>
+      }
+      else if (this.state.profile.acctType == 'organizer'
+      && !this.isAlreadyVoucher()) {
+        return <Button bsStyle='primary' onClick={this.becomeVoucher}>
+                Vouch organizer
+              </Button>
+      }
+    }
+    return ''
+
+  }
+
 
   createUserComponents= () => {
 
@@ -129,14 +199,7 @@ export default class Profile extends React.Component {
            {header: 'Tournaments',
             accessor: 'tournament_name'}]}/>
         </div>
-
-
-
-
-
     }
-
-
   }
 
   showAddGameControl = () => {
@@ -159,6 +222,7 @@ export default class Profile extends React.Component {
   }
 
   changeGamePlay = (e) => this.setState({gamePlay : e.target.value })
+
   addGamePlay = () => {
 
     let updatedProfile = update(this.state.profile,
@@ -182,6 +246,7 @@ export default class Profile extends React.Component {
               <h3 style={{padding: "1%"}}>{this.state.profile.username + "'s profile"}</h3>
               <Form>
                 {this.createEditButton()}
+                {this.showFanOrVouchButton()}
                 <FormGroup>
                   <ControlLabel>Name: </ControlLabel>
                   {' '}
