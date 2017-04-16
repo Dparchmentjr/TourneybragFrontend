@@ -19,7 +19,7 @@ export default class Profile extends React.Component {
     super();
     this.state = {
       profile: null,
-      user: JSON.parse(localStorage.getItem('user')).username,
+      user: '',
       borderStyle : {border: "1px solid LightGray", borderRadius: "5px",
         padding: "1%", background: " #e6ffff"},
       formControlStyle : {background: "#ffffff", cursor: "default",
@@ -34,6 +34,8 @@ export default class Profile extends React.Component {
   componentDidMount() {
     let username = this.context.router.route.location.pathname.split('/')[2]
     let usertype = this.context.router.route.location.search.substring(1)
+    let loggedinUser = JSON.parse(localStorage.getItem('user'))
+    loggedinUser === null ? null : this.setState({user : loggedinUser.username })
     this.getProfile(username, usertype)
 
   }
@@ -60,6 +62,12 @@ export default class Profile extends React.Component {
     this.setState({profile: updatedProfile})
   }
 
+  handleChangeDescription = (e) => {
+    let updatedProfile = update(this.state.profile,
+      {description: {$set: e.target.value }})
+    this.setState({profile: updatedProfile})
+  }
+
   handleAddComment = (comment_send) => {
     axios.post('https://django.sean-monroe.com/comment',
     {
@@ -76,7 +84,27 @@ export default class Profile extends React.Component {
 
   }
 
-  handleEditProfile = () => {this.setState({inputDisabled : !this.state.inputDisabled})}
+  handleEditProfile = () => {
+    console.log(  {
+        username : this.state.profile.username,
+        gamePlays : this.state.profile.gamePlays,
+        mainChar : this.state.profile.mainChar,
+        location : this.state.profile.location,
+        description: this.state.profile.description
+
+      })
+    if(!this.state.inputDisabled) {
+      axios.post('https://django.sean-monroe.com/playerpage',
+      {
+        username : this.state.profile.username,
+        mainchar : this.state.profile.mainchar,
+        location : this.state.profile.location,
+        description: this.state.profile.description
+
+      })
+    }
+    this.setState({inputDisabled : !this.state.inputDisabled
+    })}
 
   createEditButton = () => {
     if(this.state.isOwnProfile) {
@@ -134,7 +162,7 @@ export default class Profile extends React.Component {
   }
 
   showFanOrVouchButton = () => {
-    if(!this.state.isOwnProfile) {
+    if(!this.state.isOwnProfile && this.state.user != '') {
       if(this.state.profile.acctType == 'player'
       && !this.isAlreadyFan()) {
         return <Button bsStyle='primary' onClick={this.becomeFan}>
@@ -167,7 +195,7 @@ export default class Profile extends React.Component {
       <ReactTable style= {this.state.tableStyle}
         defaultPageSize={this.state.profile.gamePlays.length}
         data={this.state.profile.gamePlays}
-        columns={[{header: 'Game', accessor: 'gameName'}]}/>
+        columns={[{header: 'Game', accessor: 'game'}]}/>
       <h4>Tourneys participated</h4>
         <ReactTable style= {this.state.tableStyle}
           defaultPageSize={this.state.profile.tourneysPlayed.length}
@@ -266,11 +294,17 @@ export default class Profile extends React.Component {
                     value={this.state.profile.location}
                     onChange={this.handleChangeLocation}
                     disabled={this.state.inputDisabled}/>
+                  <ControlLabel>Description: </ControlLabel>
+                  <FormControl style={this.state.formControlStyle}
+                    type="text"
+                    value={this.state.profile.description}
+                    onChange={this.handleChangeDescription}
+                    disabled={this.state.inputDisabled}/>
                 </FormGroup>
               </Form>
                 {this.createUserComponents()}
                 <CommentList list={this.state.profile.comments}></CommentList>
-                <WriteComment addComment={this.handleAddComment}></WriteComment>
+                {this.state.user == '' ?  '' : <WriteComment addComment={this.handleAddComment}></WriteComment>}
             </Col>
         </div>
 

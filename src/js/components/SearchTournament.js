@@ -24,7 +24,8 @@ export default class SearchTournament extends React.Component {
     axios.post('https://django.sean-monroe.com/list-tournaments', {
             name: nameVal,
             organizer: orgVal,
-            date: dateVal
+            date: dateVal,
+            status: 'pending'
           })
           .then( response => {
               this.setState({tournaments: response.data.tournaments})
@@ -53,7 +54,7 @@ export default class SearchTournament extends React.Component {
           getTdProps={(state, rowInfo, column, instance) => {
               return {
                 onClick: e => {
-                  this.context.router.history.push('Tournament/' 
+                  this.context.router.history.push('Tournament/'
                   + rowInfo.row.tournamentTitle);
                 }
               }

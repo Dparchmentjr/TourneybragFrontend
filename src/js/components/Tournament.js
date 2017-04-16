@@ -22,8 +22,8 @@ export default class Tournament extends React.Component {
     super();
     this.state = {
 
-      tournamentInfo : tournament,
-      user: JSON.parse(localStorage.getItem('user')).username,
+      tournamentInfo : null,
+      user: '',
       participantName: '',
       tournamentStarted: false,
       roundInfo: '',
@@ -39,6 +39,8 @@ export default class Tournament extends React.Component {
 
   componentDidMount() {
     let tourneyName = this.context.router.route.location.pathname.split('/')[2]
+    let loggedinUser = JSON.parse(localStorage.getItem('user'))
+    loggedinUser === null ? null : this.setState({user : loggedinUser.username })
     this.getTournament(tourneyName)
   }
 
@@ -46,16 +48,40 @@ export default class Tournament extends React.Component {
 
   getTournament = (name) => {
     axios.get('https://django.sean-monroe.com/tournamentpage?' + name).
-    then( response => this.setState({tournamentInfo: response.data}))
+    then( response => {
+      this.setState({tournamentInfo: response.data})
+      this.setState({rounds : this.matchesToRounds()})
+      })
 
+  }
+
+  matchesToRounds = () => {
+    let matches = this.state.tournamentInfo.matches
+    let roundObj = []
+    for(let i in matches) {
+      roundObj.push({
+        array: [{name : matches[i].playerA}, {name: matches[i].playerB}],
+        index: i.toString()
+      })
+    }
+    return roundObj
   }
 
   changeParticipantName = (e) => {this.setState({participantName: e.target.value})}
 
   addparticipant = () => {
-    let updatedTournament = update(this.state.tournamentInfo,
-    {participants: {$push: [{name: this.state.participantName}]}})
-    this.setState({tournamentInfo: updatedTournament})}
+    axios.post('https://django.sean-monroe.com/application',
+    {
+      name: this.state.participantName,
+      tournament_entered: this.state.tournamentInfo.name,
+      denied: false
+    }).then(() => {
+      let updatedTournament = update(this.state.tournamentInfo,
+      {participants: {$push: [{name: this.state.participantName}]}})
+      this.setState({tournamentInfo: updatedTournament})
+    })
+  }
+
 
   removeParticipant = (index) => {let updatedTournament = update(this.state.tournamentInfo,
     {participants: {$splice: [[index,1]]}})
@@ -65,16 +91,6 @@ export default class Tournament extends React.Component {
   startTournament = () => {this.setState({tournamentStarted: true})}
 
   changeRoundInfo = (e) => {this.setState({roundInfo: e.target.value})}
-
-  addRound = () => {
-      let roundArray = this.state.roundInfo.split('\n')
-      let roundLength = this.state.rounds.length == 0 ? "1" : (this.state.rounds.length + 1).toString()
-      let roundObj = {array : roundArray.map(round => {return {name : round}}),
-                      index: roundLength}
-      let updatedRounds = update(this.state.rounds,
-      {$push: [roundObj]})
-      this.setState({rounds: updatedRounds})
-    }
 
   handleEditTournament = () => {this.setState({inputDisabled : !this.state.inputDisabled})}
 
@@ -93,113 +109,217 @@ export default class Tournament extends React.Component {
 
   }
 
+  isOwnTournament = () => {
+    if(this.state.user == this.state.tournamentInfo.organizer)
+      return true
+    else
+      return false
+
+  }
+
+  showTournamentEdit = () => {
+      if(this.isOwnTournament()) {
+       return <Button style={{marginBottom: "1%"}}
+        bsStyle={this.state.inputDisabled ? "primary" : "success"}
+        onClick={this.handleEditTournament}>
+        {this.state.inputDisabled ? "Edit Tournament" : "Done Editing"}
+      </Button>
+    }
+    else
+      return ''
+
+  }
+
+  showAddParticipant = () => {
+    if(this.isOwnTournament()) {
+      return <div>
+              <FormGroup>
+              <ControlLabel>Add Participant: </ControlLabel>
+              {' '}
+                <FormControl style={this.state.formControlStyle}
+                  type="text"
+                  placeholder="Participant name"
+                  value={this.state.participantName}
+                  onChange={this.changeParticipantName}
+                  disabled={this.state.inputDisabled}/>
+                <Button bsStyle="success" onClick={this.addparticipant}>
+                  Add Participant
+                </Button>
+            </FormGroup>
+          </div>
+    }
+    else
+     return ''
+  }
+
+  addRound = () => {
+      let roundNames = this.state.roundInfo.split('\n')
+      axios.post('https://django.sean-monroe.com/create-match',
+      {
+        tournamentTitle: this.state.tournamentInfo.name,
+        playerA: roundNames[0],
+        playerB: roundNames[1]
+      }).then(() => {
+                let roundLength = this.state.rounds.length == 0 ? "1" : (this.state.rounds.length + 1).toString()
+                let roundObj = {array : roundNames.map(playerName => {return {name : playerName}}),
+                                index: roundLength}
+                let updatedRounds = update(this.state.rounds,
+                {$push: [roundObj]})
+                this.setState({rounds: updatedRounds})
+                this.setState({roundInfo: ''})
+          })
+    }
+
+  tournamentRounds = () => {
+    let rounds = this.state.rounds.map( round => {
+      return <EditableList key={round.index}
+              data={round.array}
+              listName={'Round ' + round.index}
+              showRemoveButton={false}
+              tableSize={3}></EditableList>
+    })
+
+    if(this.isOwnTournament()) {
+        return <Col xs={6} xsPush={3}
+                style={Object.assign(this.state.borderStyle, {marginBottom : "2%"})}>
+                  <Row>
+                     <Col xs={12} style={{marginBottom: "2%"}}>
+                       {rounds}
+                     </Col>
+                      <ControlLabel>Round: </ControlLabel>
+                      {' '}
+                      <FormControl style={this.state.formControlStyle}
+                        componentClass="textarea"
+                        placeholder="Type in two players seperated by a line..."
+                        value={this.state.roundInfo}
+                        onChange={this.changeRoundInfo}/>
+                      <Button bsStyle="success" onClick={this.addRound}>
+                        Add Round
+                      </Button>
+                   </Row>
+              </Col>
+    }
+    else {
+      return <Col xs={6} xsPush={3}
+              style={Object.assign(this.state.borderStyle, {marginBottom : "2%"})}>
+                <Row>
+                   <Col xs={12} style={{marginBottom: "2%"}}>
+                     {rounds}
+                   </Col>
+               </Row>
+            </Col>
+    }
+  }
+
+  hasApplied = () => {
+
+    for(let applicant of this.state.tournamentInfo.applicants)
+      if(applicant.name == this.state.user)
+        return true
+
+    for(let participant of this.state.tournamentInfo.participants)
+      if(participant.name == this.state.user)
+        return true
+
+    return false
+
+  }
+
+  applyToTournament = () => {
+    axios.post('https://django.sean-monroe.com/apply',
+    {
+      name: this.state.user,
+      tournament_entered: this.state.tournamentInfo.name
+
+    }).then(res => {
+      let updatedTournament = update(this.state.tournamentInfo,
+      {applicants: {$push: [{name: this.state.user}]}})
+      this.setState({tournamentInfo: updatedTournament})
+    })
+
+
+  }
+
+
+  showTournamentApply = () => {
+    if(!this.isOwnTournament() && !this.hasApplied() && this.state.user != '')
+      return <Button bsStyle="success" onClick={this.applyToTournament}>
+              Apply to tournament</Button>
+    else
+      return ''
+  }
+
  render() {
 
-   let participants = this.state.tournamentInfo.participants
-   let name = this.state.tournamentInfo.name
-   let organizer = this.state.tournamentInfo.organizer
-   let date = this.state.tournamentInfo.date
+   if(this.state.tournamentInfo) {
 
-   let rounds = this.state.rounds.map( round => {
-     return <EditableList key={round.index}
-             data={round.array}
-             listName={'Round ' + round.index}
-             showRemoveButton={false}
-             tableSize={3}></EditableList>
-   })
+     let participants = this.state.tournamentInfo.participants
+     let applicants = this.state.tournamentInfo.applicants
+     let name = this.state.tournamentInfo.name
+     let organizer = this.state.tournamentInfo.organizer
+     let date = this.state.tournamentInfo.date
 
-   let tournamentRounds = () => {
-
-     if(this.state.tournamentStarted) {
-       return <Row>
-                <Col xs={12} style={{marginBottom: "2%"}}>
-                  {rounds}
-                </Col>
-                 <ControlLabel>Round: </ControlLabel>
-                 {' '}
-                 <FormControl style={this.state.formControlStyle}
-                   componentClass="textarea"
-                   placeholder="Type in two players seperated by a line..."
-                   value={this.state.roundInfo}
-                   onChange={this.changeRoundInfo}/>
-                 <Button bsStyle="success" onClick={this.addRound}>
-                   Add Round
-                 </Button>
-              </Row>
-     }
-     else {
-       return <Button
-               bsStyle="success"
-               onClick={this.startTournament}>Start Tournament!
-              </Button>
-     }
-
-   }
-
-    return (
-      <div>
-        <Col xs={12} xsPush={3}>
-          <h1>{name}</h1>
-          <Col xs={12} xsPush={5}>
-          <Button style={{marginBottom: "1%"}}
-            bsStyle={this.state.inputDisabled ? "primary" : "success"}
-            onClick={this.handleEditTournament}>
-            {this.state.inputDisabled ? "Edit Tournament" : "Done Editing"}
-          </Button>
+      return (
+        <div>
+          <Col xs={12} xsPush={3}>
+            <h1>{name}</h1>
+            <Col xs={12} xsPush={5}>
+              {this.showTournamentEdit()}
+            </Col>
           </Col>
-        </Col>
-        <Row>
-          <Col xs={6} xsPush={3}
-            style={Object.assign(this.state.borderStyle, {marginBottom : "2%"})}>
-            {tournamentRounds()}
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={6} xsPush={3} style={this.state.borderStyle}>
-            <h4>Tournament Information</h4>
-            <FormGroup>
-              <ControlLabel>Organizer: </ControlLabel>
-              {' '}
-              <FormControl style={this.state.formControlStyle}
-                type="text"
-                value={organizer}
-                disabled={this.state.inputDisabled}/>
-              <ControlLabel>Start date: </ControlLabel>
-              {' '}
-              <FormControl style={this.state.formControlStyle}
-                type="date"
-                value={date}
-                disabled={this.state.inputDisabled}/>
-            </FormGroup>
+          <Row>
+              {this.tournamentRounds()}
+          </Row>
+          <Row>
+            <Col xs={6} xsPush={3} style={this.state.borderStyle}>
+              <h4>Tournament Information</h4>
+              {this.showTournamentApply()}
               <FormGroup>
-                <ControlLabel>Add Participant: </ControlLabel>
+                <ControlLabel>Organizer: </ControlLabel>
                 {' '}
-                  <FormControl style={this.state.formControlStyle}
-                    type="text"
-                    placeholder="Participant name"
-                    value={this.state.participantName}
-                    onChange={this.changeParticipantName}
-                    disabled={this.state.inputDisabled}/>
-                  <Button bsStyle="success" onClick={this.addparticipant}>
-                    Add Participant
-                  </Button>
+                <FormControl style={this.state.formControlStyle}
+                  type="text"
+                  value={organizer}
+                  disabled={this.state.inputDisabled}/>
+                <ControlLabel>Start date: </ControlLabel>
+                {' '}
+                <FormControl style={this.state.formControlStyle}
+                  type="date"
+                  value={date}
+                  disabled={this.state.inputDisabled}/>
               </FormGroup>
-              <EditableList
-                data={participants}
-                listName="Participants"
-                showRemoveButton={!this.state.inputDisabled}
-                removeItem={this.removeParticipant}
-                tableSize={12}></EditableList>
-              <Col xs={12} style={{marginTop: "1%"}}>
-                <CommentList list={this.state.tournamentInfo.comments}></CommentList>
-                <WriteComment addComment={this.handleAddComment}></WriteComment>
-              </Col>
+                {this.showAddParticipant()}
+                <Col xs={12}>
+                  <EditableList
+                    data={participants}
+                    listName="Participants"
+                    showRemoveButton={false}
+                    tableSize={12}></EditableList>
+                </Col>
+                <Col xs={12} style={{marginTop: "2%"}}>
+                  <EditableList
+                    data={applicants}
+                    listName="Applicants"
+                    showRemoveButton={!this.state.inputDisabled}
+                    removeItem={this.removeParticipant}
+                    tableSize={12}></EditableList>
+                </Col>
+                <Col xs={12} style={{marginTop: "1%"}}>
+                  <CommentList list={this.state.tournamentInfo.comments}></CommentList>
+                  {this.state.user == '' ? '' : <WriteComment addComment={this.handleAddComment}></WriteComment>}
+                </Col>
 
-          </Col>
-        </Row>
-      </div>
-    );
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+    else
+      return <div>Loading...</div>
   }
+
+
+
 }
 
 Tournament.contextTypes = {
