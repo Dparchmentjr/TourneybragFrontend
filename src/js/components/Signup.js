@@ -6,20 +6,51 @@
  @desc This component handles the controls for the login modal.
  ----------------------------------------------------------------------*/
 import React from "react";
-import {Button, ControlLabel, FormControl, FormGroup, Modal, Navbar} from "react-bootstrap";
-import {Route, Link} from "react-router-dom";
-export default class Signup extends React.Component {
+import {Button, ControlLabel, FormControl, FormGroup, HelpBlock, Modal, Navbar} from "react-bootstrap";
+import {userSignupRequest} from "../actions/SignupActions";
+import {login} from "../actions/LoginAction";
+import {connect} from "react-redux";
+import validator from "validator";
+import {isEmpty} from "lodash";
+
+class Signup extends React.Component {
     constructor() {
         super();
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.closeChooseSignup = this.closeChooseSignup.bind(this);
         this.handlePlayerSignup = this.handlePlayerSignup.bind(this);
         this.handleOrganizerSignup = this.handleOrganizerSignup.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSignup = this.handleSignup.bind(this);
         this.state = {
             showChooseSignupType: false,
             showOrganizeSignUp: false,
-            showPlayerSignUp: false
+            showPlayerSignUp: false,
+            playerUsername: "",
+            playerPassword: "",
+            playerLocation: "",
+            playerDescription: "",
+            organizerUsername: "",
+            organizerPassword: "",
+            organizerLocation: "",
+            organizerDescription: "",
+            type: "",
+            errors: {},
+            feedback: {}
         }
+    }
+
+    isValidSignup(data) {
+        const {errors, feedback, valid} = validateSignup(data);
+        if(!valid) {
+            this.setState({errors: errors});
+            this.setState({feedback: feedback});
+        }
+        return valid;
+    }
+
+    handleChange(e) {
+        this.setState({[e.target.name]: e.target.value});
     }
 
     handleSignupClick() {
@@ -27,15 +58,53 @@ export default class Signup extends React.Component {
     }
     handlePlayerSignup() {
         this.closeChooseSignup();
-        this.setState({showPlayerSignUp: true});
+        this.setState({showPlayerSignUp: true, type: "player"});
     }
     handleOrganizerSignup() {
         this.closeChooseSignup();
-        this.setState({showOrganizerSignUp: true});
+        this.setState({showOrganizerSignUp: true, type: "organizer"});
     }
 
     closeChooseSignup() {
         this.setState({showChooseSignupType: false});
+    }
+
+    handleSignup(e) {
+        e.preventDefault();
+        let userData = {}, loginData = {};
+        if(this.state.type === "player") {
+            userData = {
+                username: this.state.playerUsername,
+                type: this.state.type,
+                password: this.state.playerPassword,
+                location: this.state.playerLocation,
+                description: this.state.playerDescription
+            }
+            loginData = {
+                username: this.state.playerUsername,
+                password: this.state.playerPassword
+            }
+        }
+        else if(this.state.type === "organizer") {
+            userData = {
+                username: this.state.organizerUsername,
+                type: this.state.type,
+                password: this.state.organizerPassword,
+                location: this.state.organizerLocation,
+                description: this.state.organizerDescription
+            }
+            loginData = {
+                username: this.state.organizerUsername,
+                password: this.state.organizerPassword
+            }
+        }
+        if(this.isValidSignup(userData)) {
+            this.setState({errors: {}, feedback: {}})
+            this.props.userSignupRequest(userData);
+            this.setState({showChooseSignupType: false});
+            this.setState({showPlayerSignUp: false});
+            this.setState({showOrganizerSignUp: false});
+        }
     }
 
     render() {
@@ -64,32 +133,44 @@ export default class Signup extends React.Component {
                         <Modal.Title>Signup As A Player</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form>
-                            <FormGroup controlId="player-username">
+                        <form onSubmit={this.handleSignup}>
+                            <FormGroup controlId="player-username" validationState={this.state.feedback.username}>
                                 <ControlLabel>Username:</ControlLabel>
                                 <FormControl
+                                    name="playerUsername"
                                     type="text"
-                                    placeholder="Enter your username here..."/>
+                                    placeholder="Enter your username here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.username}</HelpBlock>
                             </FormGroup>
-                            <FormGroup controlId="player-password">
+                            <FormGroup controlId="player-password" validationState={this.state.feedback.password}>
                                 <ControlLabel>Password:</ControlLabel>
                                 <FormControl
-                                    type="text"
-                                    placeholder="Enter your password here..."/>
+                                    name="playerPassword"
+                                    type="password"
+                                    placeholder="Enter your password here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.password}</HelpBlock>
                             </FormGroup>
-                            <FormGroup controlId="player-gameplayed">
-                                <ControlLabel>Game Played:</ControlLabel>
+                            <FormGroup controlId="player-location" validationState={this.state.feedback.location}>
+                                <ControlLabel>Enter the country you live in:</ControlLabel>
                                 <FormControl
+                                    name="playerLocation"
                                     type="text"
-                                    placeholder="Enter the main game that you play..."/>
+                                    placeholder="Enter your location here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.location}</HelpBlock>
                             </FormGroup>
-                            <FormGroup controlId="player-maincharacter">
-                                <ControlLabel>Favorite Game Character:</ControlLabel>
+                            <FormGroup controlId="player-description" validationState={this.state.feedback.description}>
+                                <ControlLabel>Describe yourself:</ControlLabel>
                                 <FormControl
-                                    type="text"
-                                    placeholder="Enter your favorite game player..."/>
+                                    name="playerDescription"
+                                    componentClass="textarea"
+                                    placeholder="Enter your description here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.description}</HelpBlock>
                             </FormGroup>
-                            <Button type="Submit">Sign Up</Button>
+                            <Button type="submit">Sign Up</Button>
                         </form>
                     </Modal.Body>
                 </Modal>
@@ -98,26 +179,75 @@ export default class Signup extends React.Component {
                         <Modal.Title>Signup As An Organizer</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form>
-                            <FormGroup controlId="player-username">
+                        <form onSubmit={this.handleSignup}>
+                            <FormGroup controlId="organizer-username" validationState={this.state.feedback.username}>
                                 <ControlLabel>Username:</ControlLabel>
                                 <FormControl
+                                    name="organizerUsername"
                                     type="text"
-                                    placeholder="Enter your username here..."/>
+                                    placeholder="Enter your username here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.username}</HelpBlock>
                             </FormGroup>
-                            <FormGroup controlId="player-password">
+                            <FormGroup controlId="organizer-password" validationState={this.state.feedback.password}>
                                 <ControlLabel>Password:</ControlLabel>
                                 <FormControl
-                                    type="text"
-                                    placeholder="Enter your password here..."/>
+                                    name="organizerPassword"
+                                    type="password"
+                                    placeholder="Enter your password here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.password}</HelpBlock>
                             </FormGroup>
-                            <Button type="Submit">Sign Up</Button>
+                            <FormGroup controlId="organizer-location" validationState={this.state.feedback.location}>
+                                <ControlLabel>Enter the country you live in:</ControlLabel>
+                                <FormControl
+                                    name="organizerLocation"
+                                    type="text"
+                                    placeholder="Enter your location here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.location}</HelpBlock>
+                            </FormGroup>
+                            <FormGroup controlId="organizer-description" validationState={this.state.feedback.description}>
+                                <ControlLabel>Describe yourself:</ControlLabel>
+                                <FormControl
+                                    name="organizerDescription"
+                                    componentClass="textarea"
+                                    placeholder="Enter your description here..."
+                                    onChange={this.handleChange}/>
+                                <HelpBlock>{this.state.errors.description}</HelpBlock>
+                            </FormGroup>
+                            <Button type="submit">Sign Up</Button>
                         </form>
                     </Modal.Body>
                 </Modal>
             </Navbar.Form>
         );
     }
+}
+
+function validateSignup(data) {
+    let errors = {}, feedback = {};
+    if(validator.isEmpty(data.username)) {
+        errors.username = "This field is required!";
+        feedback.username = "error";
+    }
+    if(validator.isEmpty(data.password)) {
+        errors.password = "This field is required!";
+        feedback.password = "error";
+    }
+    if(validator.isEmpty(data.location)) {
+        errors.location = "This field is required!";
+        feedback.location = "error";
+    }
+    if(validator.isEmpty(data.description)) {
+        errors.description = "This field is required!";
+        feedback.description = "error";
+    }
+    return {
+        errors,
+        feedback,
+        valid: isEmpty(errors)
+    };
 }
 
 const styles = {
@@ -127,3 +257,13 @@ const styles = {
         border: "none"
     }
 }
+
+Signup.contextTypes = {
+    router: React.PropTypes.object.isRequired
+}
+
+Signup.propTypes = {
+    userSignupRequest: React.PropTypes.func.isRequired
+}
+
+export default connect(null, {userSignupRequest})(Signup);

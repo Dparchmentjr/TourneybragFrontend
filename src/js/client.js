@@ -13,11 +13,9 @@ const app = document.getElementById('app');
 
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 
-console.log(localStorage.user);
 if(localStorage.user) {
     store.dispatch(setCurrentUser(JSON.parse(localStorage.user)));
 }
-
 
 ReactDOM.render(
     <Provider store={store}>

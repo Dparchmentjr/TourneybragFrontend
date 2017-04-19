@@ -1,5 +1,5 @@
-import {Authenticate} from "../components/Login/Authenticate";
 import {SET_CURRENT_USER} from "./types";
+import axios from "axios";
 
 export function setCurrentUser(user) {
     return {
@@ -9,11 +9,29 @@ export function setCurrentUser(user) {
 }
 export function login(data) {
     return dispatch => {
-        return Authenticate(data).then(
-            (resolved) => {
-                localStorage.setItem('user', JSON.stringify(resolved.user));
-                dispatch(setCurrentUser(resolved.user));
-                console.log("Dispatched user!", resolved.user);
+        return axios.post("https://django.sean-monroe.com/login", data).then(
+            resolved => {
+                let user = {
+                    username: data.username,
+                    type: resolved.data.reason
+                }
+                if(resolved.data.reason === "User not found") {
+                    alert("User not found!");
+                }
+                if(resolved.data.reason === "Invalid password") {
+                    alert("Invalid password");
+                }
+                else if(
+                    resolved.data.reason !== "Invalid password" &&
+                    resolved.data.reason !== "User not found" &&
+                    (resolved.data.reason !== "admin" && resolved.data.reason !== "organizer" && resolved.data.reason !== "player")) {
+                    alert("This account has been banned for the following reason: " + resolved.data.reason);
+                }
+                else {
+                    localStorage.setItem('user', JSON.stringify(user));
+                    dispatch(setCurrentUser(user));
+                }
+
             }
         );
     }

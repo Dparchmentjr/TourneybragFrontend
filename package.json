@@ -21,6 +21,7 @@
     "react-bootstrap": "^0.30.8",
     "react-bracket": "0.0.4",
     "react-dom": "^15.4.2",
+    "react-fontawesome": "^1.5.0",
     "react-redux": "^5.0.3",
     "react-router": "^4.0.0",
     "react-router-dom": "^4.0.0",
@@ -32,6 +33,8 @@
     "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {
+    "country-list": "^1.1.0",
+    "countryjs": "^1.6.1",
     "css-loader": "^0.27.3",
     "style-loader": "^0.16.0"
   },
