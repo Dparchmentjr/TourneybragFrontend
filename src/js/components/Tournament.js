@@ -231,13 +231,18 @@ export default class Tournament extends React.Component {
 
 
   showTournamentApply = () => {
-    let type = JSON.parse(localStorage.getItem("user")).type;
-    console.log(type);
-    if(!this.isOwnTournament() && !this.hasApplied() && this.state.user != '' && type !== "organizer")
-      return <Button bsStyle="success" onClick={this.applyToTournament}>
-              Apply to tournament</Button>
-    else
-      return ''
+    let type = JSON.parse(localStorage.getItem("user"));
+    if(type !== null) {
+        console.log(type);
+        if(!this.isOwnTournament() && !this.hasApplied() && this.state.user != '' && type !== "organizer")
+            return <Button bsStyle="success" onClick={this.applyToTournament}>
+                Apply to tournament</Button>
+        else
+            return ''
+    }
+    else {
+        return ""
+    }
   }
 
  render() {
