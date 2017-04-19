@@ -6,18 +6,22 @@ import { ControlLabel } from "react-bootstrap"
 import { FormControl } from "react-bootstrap"
 import { Col } from "react-bootstrap"
 import { Button } from 'react-bootstrap'
-import  { profiles } from "../mock-data/profiles"
+import { Modal } from "react-bootstrap"
+import { OverlayTrigger, Tooltip } from "react-bootstrap"
 import update from 'immutability-helper'
 import ReactTable from "react-table"
 import  CommentList  from "./CommentList"
 import WriteComment from "./WriteComment"
-import axios from 'axios'
+import axios from 'axios';
+import FontAwesome from "react-fontawesome";
+
 
 export default class Profile extends React.Component {
 
   constructor() {
     super();
     this.state = {
+      showTournamentModal: false,
       profile: null,
       user: '',
       borderStyle : {border: "1px solid LightGray", borderRadius: "5px",
@@ -27,7 +31,13 @@ export default class Profile extends React.Component {
       tableStyle : {marginBottom: "2%", background: "white"},
       gamePlay : '',
       inputDisabled: true,
-      isOwnProfile : false
+      isOwnProfile : false,
+      tournamentName: "",
+      tournamentDate: "",
+      showBan: false,
+      banReason: "",
+      unbannedDate: "",
+      pageViewer: JSON.parse(localStorage.getItem("user"))
     };
   }
 
@@ -108,7 +118,8 @@ export default class Profile extends React.Component {
 
   createEditButton = () => {
     if(this.state.isOwnProfile) {
-      return <Button style={{marginBottom: "2%"}}
+      return <Button
+        style={styles.floatLeft}
         bsStyle={this.state.inputDisabled ? "primary" : "success"}
         onClick={this.handleEditProfile}>
         {this.state.inputDisabled ? "Edit Profile" : "Done Editing"}
@@ -118,6 +129,94 @@ export default class Profile extends React.Component {
       return ''
     }
   }
+
+  //Added by Dane E. Parchment Jr.
+  handleCreateTournament = () => {
+      this.setState({showTournamentModal: true});
+  }
+  createTournamentButton = () => {
+      if(this.state.isOwnProfile && this.state.profile.acctType === "organizer") {
+          return <Button
+            onClick={this.handleCreateTournament}
+            bsStyle="primary"
+            style={styles.floatLeft}
+            >
+          Create Tournament
+          </Button>
+      }
+      else {
+          return "";
+      }
+  }
+
+handleChange = (e) => {
+      this.setState({[e.target.name]: e.target.value});
+}
+
+createTournament = () => {
+      let data = {
+          name: this.state.tournamentName,
+          organizer: this.state.profile.username,
+          date: this.state.tournamentDate,
+          status: "pending"
+      }
+      axios.post("https://django.sean-monroe.com/tournamentpage", data).then(
+          resolved => {console.log("Tournament Created!")}
+      );
+      this.setState({showTournamentModal: false});
+}
+
+displayReportFlag = () => {
+    if(this.state.pageViewer === null) { //Guest Viewing
+        return "";
+    }
+    else if(!this.state.isOwnProfile && this.state.pageViewer.type !== "admin") {
+          const tooltip = (<Tooltip id="tooltip">Report player for banning.</Tooltip>);
+          return (
+              <OverlayTrigger placement="right" overlay={tooltip}>
+                  <FontAwesome
+                      name="flag"
+                      size="1x"
+                      style={styles.banFlag}
+                  />
+              </OverlayTrigger>
+          );
+      }
+      else {
+          return "";
+      }
+}
+
+showBanModal = () => {
+      this.setState({showBan: true});
+}
+
+createBanButton = () => {
+      if(this.state.pageViewer === null) {
+          return "";
+      }
+      else if(!this.state.isOwnProfile && this.state.pageViewer.type === "admin") {
+          return (
+              <Button style={styles.floatLeft} bsStyle="danger" onClick={this.showBanModal}>Ban User</Button>
+          )
+      }
+      return "";
+}
+
+handleBan = () => {
+      let data = {
+          admin: this.state.pageViewer.username,
+          bannedUser: this.state.profile.username,
+          bannedUntil: this.state.unbannedDate,
+          reason: this.state.banReason
+      }
+      axios.post("https://django.sean-monroe.com/ban", data).then(
+          resolved => {
+              console.log("Banned the user!");
+          }
+      );
+}
+//-------------------------------------
 
   becomeFan = () => {
     axios.post('https://django.sean-monroe.com/fan',
@@ -165,13 +264,13 @@ export default class Profile extends React.Component {
     if(!this.state.isOwnProfile && this.state.user != '') {
       if(this.state.profile.acctType == 'player'
       && !this.isAlreadyFan()) {
-        return <Button bsStyle='primary' onClick={this.becomeFan}>
+        return <Button bsStyle='primary' onClick={this.becomeFan} style={styles.floatLeft}>
                  Become a fan
                </Button>
       }
       else if (this.state.profile.acctType == 'organizer'
       && !this.isAlreadyVoucher()) {
-        return <Button bsStyle='primary' onClick={this.becomeVoucher}>
+        return <Button bsStyle='primary' onClick={this.becomeVoucher} style={styles.floatLeft}>
                 Vouch organizer
               </Button>
       }
@@ -258,23 +357,30 @@ export default class Profile extends React.Component {
     this.setState({profile: updatedProfile})
 
   }
-
   calculateWinLoss = () => {
     let wl = this.state.profile.wins / this.state.profile.losses
     return isNaN(wl) ? 0 : wl
   }
 
  render() {
+     console.log(this.state.profile);
      if(this.state.profile) {
       return (
 
         <div>
             <Col xs={6} xsPush={3}
               style={this.state.borderStyle}>
-              <h3 style={{padding: "1%"}}>{this.state.profile.username + "'s profile"}</h3>
+              <h3 style={{padding: "1%"}}>
+                  {this.state.profile.username + "'s profile "}
+                  {this.displayReportFlag()}
+              </h3>
               <Form>
-                {this.createEditButton()}
-                {this.showFanOrVouchButton()}
+                <div>
+                    {this.createEditButton()}
+                    {this.showFanOrVouchButton()}
+                    {this.createTournamentButton()}
+                    {this.createBanButton()}
+                </div>
                 <FormGroup>
                   <ControlLabel>Name: </ControlLabel>
                   {' '}
@@ -306,6 +412,49 @@ export default class Profile extends React.Component {
                 <CommentList list={this.state.profile.comments}></CommentList>
                 {this.state.user == '' ?  '' : <WriteComment addComment={this.handleAddComment}></WriteComment>}
             </Col>
+            {/* Added by Dane E. Parchment Jr. */}
+            <Modal show={this.state.showTournamentModal} onHide={() => {this.setState({showTournamentModal: false})}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create A Tournament</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        <FormGroup>
+                            <ControlLabel>Name of Tournament</ControlLabel>
+                            <FormControl
+                                type="text"
+                                id="tournament-name"
+                                name="tournamentName"
+                                onChange={this.handleChange}
+                            />
+                            <label>Tournament Date</label>
+                            <input type="date" name="tournamentDate" style={{display: "block"}} onChange={this.handleChange} />
+                        </FormGroup>
+                        <Button bsStyle="primary" onClick={this.createTournament}>Create Tournament</Button>
+                    </form>
+                </Modal.Body>
+            </Modal>
+            <Modal show={this.state.showBan} onHide={() => {this.setState({showBan: false})}}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Ban User</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <form>
+                        <FormGroup>
+                            <ControlLabel>Reason For Ban</ControlLabel>
+                            <FormControl
+                                type="text"
+                                id="ban-reason"
+                                name="banReason"
+                                onChange={this.handleChange}
+                            />
+                            <label>Unbanned Date</label>
+                            <input type="date" name="unbannedDate" style={{display: "block"}} onChange={this.handleChange} />
+                            <Button bsStyle="success" onClick={this.handleBan}>Ban User</Button>
+                        </FormGroup>
+                    </form>
+                </Modal.Body>
+            </Modal>
         </div>
 
 
@@ -315,6 +464,19 @@ export default class Profile extends React.Component {
   }
 
 
+}
+
+const styles = {
+    floatLeft: {
+        display: "block",
+        float: "left",
+        marginBottom: 2 + "%"
+    },
+    banFlag: {
+        color: "red",
+        cursor: "pointer",
+        fontSize: 12 + "px"
+    }
 }
 
 Profile.contextTypes = {

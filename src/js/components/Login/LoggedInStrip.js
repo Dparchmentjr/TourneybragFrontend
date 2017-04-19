@@ -1,5 +1,6 @@
 import React from "react";
-import {Badge, DropdownButton, FormGroup, FormControl, Glyphicon, MenuItem, Navbar} from "react-bootstrap";
+import {DropdownButton, Glyphicon, MenuItem, Navbar} from "react-bootstrap";
+import {Link} from "react-router-dom";
 import {logout} from "../../actions/LoginAction";
 import {connect} from "react-redux";
 
@@ -14,17 +15,17 @@ class LoggedInStrip extends React.Component {
     }
 
     render() {
+        let loggedinUser = JSON.parse(localStorage.getItem('user'));
         const name = this.props.auth.user.username;
         const nameText = (<Navbar.Text>Welcome to TourneyBrag, {name}</Navbar.Text>);
         return(
             <Navbar.Form pullRight>
                 {nameText}
                 <DropdownButton id="UserDropdown" style={styles.dropdown} title={<Glyphicon glyph="user"/>}>
-                    <MenuItem>Profile</MenuItem>
+                    <MenuItem><Link to={`Profile/${loggedinUser.username}?${loggedinUser.type}`}>Profile</Link></MenuItem>
                     <MenuItem divider></MenuItem>
                     <MenuItem onClick={this.logout}>Logout</MenuItem>
                 </DropdownButton>
-                <DropdownButton id="NotificationDropdown" style={styles.dropdown} title={<Glyphicon glyph="bell"/>}></DropdownButton>
             </Navbar.Form>
         );
     }

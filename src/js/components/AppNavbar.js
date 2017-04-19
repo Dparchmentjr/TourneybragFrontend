@@ -6,7 +6,6 @@ import { NavItem } from "react-bootstrap"
 import {Link} from 'react-router-dom';
 import Login from "./Login";
 import Signup from "./Signup";
-import {Button} from "react-bootstrap";
 import LoggedInStrip from "./Login/LoggedInStrip";
 import {connect} from "react-redux";
 import {logout} from "../actions/LoginAction";
@@ -37,7 +36,7 @@ class AppNavbar extends React.Component {
       )
     return (
       <div>
-      <Navbar inverse collapseOnSelect>
+      <Navbar inverse collapseOnSelect style={styles.appNavbarStyles}>
    <Navbar.Header>
      <Navbar.Brand>
        <Link to="/">
@@ -48,27 +47,12 @@ class AppNavbar extends React.Component {
    </Navbar.Header>
    <Navbar.Collapse>
      <Nav>
-{/*
-        <NavItem eventKey={1}>
-          <Link
-            to="/SearchPlayer"
-            style={{color: "inherit"}}
-          >Players</Link>
-        </NavItem>
-        <NavItem eventKey={2}>
-          <Link
-            to="/SearchTournament"
-            style={{color: "inherit"}}
-            >Tournaments</Link>
-        </NavItem>
-*/}
         <NavItem eventKey={1}>
           <Link to="/search-players" style={{color: "inherit"}}>Players</Link>
         </NavItem>
         <NavItem eventKey={2}>
           <Link to="/search-tournaments" style={{color: "inherit"}}>Tournaments</Link>
         </NavItem>
-{/*       <Login></Login>	*/}
      </Nav>
        {isAuthenticated ? userLinks : guestLinks}
    </Navbar.Collapse>
@@ -88,6 +72,13 @@ function mapStateToProps(state) {
     return {
         auth: state.auth
     };
+}
+
+const styles = {
+    appNavbarStyles: {
+        marginBottom: 0 + "px",
+        borderRadius: 0 + "px"
+    }
 }
 
 export default connect(mapStateToProps, { logout })(AppNavbar);

@@ -2,9 +2,11 @@
   <dictionary name="dparc">
     <words>
       <w>glyphicon</w>
+      <w>jumbotron</w>
       <w>loggedin</w>
       <w>navbar</w>
       <w>signup</w>
+      <w>userjson</w>
       <w>whoohoo</w>
     </words>
   </dictionary>
