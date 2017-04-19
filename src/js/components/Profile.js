@@ -51,18 +51,10 @@ export default class Profile extends React.Component {
   }
 
   getProfile = (username, usertype) => {
-    if(usertype == 'player') {
-        axios.get('https://django.sean-monroe.com/playerpage?' + username).
-        then( response => {
-          this.setState({profile: response.data})
-          this.state.user == response.data.username ? this.setState({isOwnProfile : true}) : null})
-    }
-    else if (usertype == 'organizer'){
-      axios.get('https://django.sean-monroe.com/organizerpage?' + username).
-      then( response => {
-        this.setState({profile: response.data})
-        this.state.user == response.data.username ? this.setState({isOwnProfile : true}) : null})
-    }
+    axios.get(`https://django.sean-monroe.com/${usertype}page?` + username).
+    then( response => {
+      this.setState({profile: response.data})
+      this.state.user == response.data.username ? this.setState({isOwnProfile : true}) : null})
 
   }
 
@@ -95,22 +87,15 @@ export default class Profile extends React.Component {
   }
 
   handleEditProfile = () => {
-    console.log(  {
-        username : this.state.profile.username,
-        gamePlays : this.state.profile.gamePlays,
-        mainChar : this.state.profile.mainChar,
-        location : this.state.profile.location,
-        description: this.state.profile.description
 
-      })
     if(!this.state.inputDisabled) {
-      axios.post('https://django.sean-monroe.com/playerpage',
+      console.log(this.state.profile.location)
+      axios.post(`https://django.sean-monroe.com/${this.state.profile.acctType}page`,
       {
         username : this.state.profile.username,
-        mainchar : this.state.profile.mainchar,
         location : this.state.profile.location,
-        description: this.state.profile.description
-
+        description: this.state.profile.description,
+        editing: true
       })
     }
     this.setState({inputDisabled : !this.state.inputDisabled
@@ -351,10 +336,19 @@ handleBan = () => {
   changeGamePlay = (e) => this.setState({gamePlay : e.target.value })
 
   addGamePlay = () => {
+    console.log(this.state.profile.name)
+    console.log(this.state.gamePlay)
+    axios.post('https://django.sean-monroe.com/game',
+    {
+      player: this.state.profile.username,
+      game: this.state.gamePlay,
+      character: ""
 
-    let updatedProfile = update(this.state.profile,
-      {gamePlays: {$push: [{gameName : this.state.gamePlay}]}})
-    this.setState({profile: updatedProfile})
+    }).then(() => {
+          let updatedProfile = update(this.state.profile,
+            {gamePlays: {$push: [{game : this.state.gamePlay}]}})
+          this.setState({profile: updatedProfile})
+    })
 
   }
   calculateWinLoss = () => {
@@ -363,7 +357,6 @@ handleBan = () => {
   }
 
  render() {
-     console.log(this.state.profile);
      if(this.state.profile) {
       return (
 

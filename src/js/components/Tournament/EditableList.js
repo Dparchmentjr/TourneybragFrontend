@@ -20,19 +20,19 @@ export default class EditableList extends React.Component {
     };
   }
 
-  removeItem = (index) => { this.props.removeItem(index)}
+  approve = (index) => { this.props.approve(index)}
 
 
  render() {
 
    let data = [...Array(this.props.data.length).keys()].map(i => {return {data: this.props.data[i], index : i.toString()}})
 
-   let removeButton = (index) => {
-     if(this.props.showRemoveButton) {
+   let approveButton = (index) => {
+     if(this.props.showApproveButton) {
        return <Button
-               bsStyle="danger"
+               bsStyle="success"
                href="#"
-               onClick={() => { this.removeItem(index) }}>Remove</Button>
+               onClick={() => { this.approve(index) }}>Approve</Button>
      }
      else {
        return ''
@@ -41,7 +41,7 @@ export default class EditableList extends React.Component {
 
    let tableRows = data.map( item => {
      return  <ButtonGroup style={{padding : "0%"}} key={item.index} justified>
-                {removeButton(item.index)}
+                {approveButton(item.index)}
                 <Button href="#">{item.data.name}</Button>
              </ButtonGroup>
 

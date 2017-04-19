@@ -70,11 +70,10 @@ export default class Tournament extends React.Component {
   changeParticipantName = (e) => {this.setState({participantName: e.target.value})}
 
   addparticipant = () => {
-    axios.post('https://django.sean-monroe.com/application',
+    axios.post('https://django.sean-monroe.com/apply',
     {
       name: this.state.participantName,
-      tournament_entered: this.state.tournamentInfo.name,
-      denied: false
+      tournament_entered: this.state.tournamentInfo.name
     }).then(() => {
       let updatedTournament = update(this.state.tournamentInfo,
       {participants: {$push: [{name: this.state.participantName}]}})
@@ -83,9 +82,20 @@ export default class Tournament extends React.Component {
   }
 
 
-  removeParticipant = (index) => {let updatedTournament = update(this.state.tournamentInfo,
-    {participants: {$splice: [[index,1]]}})
-    this.setState({tournamentInfo: updatedTournament})
+  approveParticipant = (index) => {
+
+    axios.post('https://django.sean-monroe.com/application',
+    {
+      name: this.state.tournamentInfo.applicants[index].name,
+      tournament_entered: this.state.tournamentInfo.name,
+      denied: false
+
+
+    }).then(() => {
+      let updatedTournament = update(this.state.tournamentInfo,
+        {participants: {$push: [{name: this.state.tournamentInfo.applicants[index].name}]}})
+      this.setState({tournamentInfo: updatedTournament})})
+
   }
 
   startTournament = () => {this.setState({tournamentStarted: true})}
@@ -130,27 +140,6 @@ export default class Tournament extends React.Component {
 
   }
 
-  showAddParticipant = () => {
-    if(this.isOwnTournament()) {
-      return <div>
-              <FormGroup>
-              <ControlLabel>Add Participant: </ControlLabel>
-              {' '}
-                <FormControl style={this.state.formControlStyle}
-                  type="text"
-                  placeholder="Participant name"
-                  value={this.state.participantName}
-                  onChange={this.changeParticipantName}
-                  disabled={this.state.inputDisabled}/>
-                <Button bsStyle="success" onClick={this.addparticipant}>
-                  Add Participant
-                </Button>
-            </FormGroup>
-          </div>
-    }
-    else
-     return ''
-  }
 
   addRound = () => {
       let roundNames = this.state.roundInfo.split('\n')
@@ -175,7 +164,7 @@ export default class Tournament extends React.Component {
       return <EditableList key={round.index}
               data={round.array}
               listName={'Round ' + round.index}
-              showRemoveButton={false}
+              showApproveButton={false}
               tableSize={3}></EditableList>
     })
 
@@ -288,20 +277,19 @@ export default class Tournament extends React.Component {
                   value={date}
                   disabled={this.state.inputDisabled}/>
               </FormGroup>
-                {this.showAddParticipant()}
                 <Col xs={12}>
                   <EditableList
                     data={participants}
                     listName="Participants"
-                    showRemoveButton={false}
+                    showApproveButton={false}
                     tableSize={12}></EditableList>
                 </Col>
                 <Col xs={12} style={{marginTop: "2%"}}>
                   <EditableList
                     data={applicants}
                     listName="Applicants"
-                    showRemoveButton={!this.state.inputDisabled}
-                    removeItem={this.removeParticipant}
+                    showApproveButton={!this.state.inputDisabled}
+                    approve={this.approveParticipant}
                     tableSize={12}></EditableList>
                 </Col>
                 <Col xs={12} style={{marginTop: "1%"}}>
