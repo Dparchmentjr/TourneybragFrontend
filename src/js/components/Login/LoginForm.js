@@ -45,9 +45,7 @@ class LoginForm extends React.Component {
                 username: this.state.username,
                 password: this.state.password
             }
-            this.props.login(data).then(
-                (resolved) => {console.log(resolved)}
-            );
+            this.props.login(data);
         }
     }
 

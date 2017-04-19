@@ -42,9 +42,9 @@ export default class SearchPlayer extends React.Component {
     let displayUser = this.state.users
     return (
       <div>
-        <SearchPlayerFilter handleFilterUpdate={this.handleFilterUpdate}>
+        <SearchPlayerFilter handleFilterUpdate={this.handleFilterUpdate} style={styles.noBottomMargin}>
         </SearchPlayerFilter>
-        <ReactTable
+        <ReactTable style={styles.background}
           data={displayUser}
           columns={[{header: 'Name', accessor: 'username'},
           {header: 'Description', accessor: 'description'},
@@ -63,4 +63,13 @@ export default class SearchPlayer extends React.Component {
 
 SearchPlayer.contextTypes = {
   router: React.PropTypes.object.isRequired
+}
+
+const styles = {
+    background: {
+        backgroundColor: "#ffffff"
+    },
+    noBottomMargin: {
+        marginBottom: 0 + "px"
+    }
 }
