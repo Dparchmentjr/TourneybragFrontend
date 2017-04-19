@@ -44,9 +44,9 @@ export default class SearchTournament extends React.Component {
 
     return (
       <div>
-        <SearchTournamentFilter handleFilterUpdate={this.handleFilterUpdate}>
+        <SearchTournamentFilter handleFilterUpdate={this.handleFilterUpdate} style={styles.noBottomMargin}>
         </SearchTournamentFilter>
-        <ReactTable
+        <ReactTable style={styles.background}
           data={displayTournament}
           columns={[{header: 'Name', accessor: 'tournamentTitle'},
           {header: 'Organizer', accessor: 'organizerOwner'},
@@ -66,4 +66,13 @@ export default class SearchTournament extends React.Component {
 
 SearchTournament.contextTypes = {
   router: React.PropTypes.object.isRequired
+}
+
+const styles = {
+    background: {
+        backgroundColor: "#ffffff"
+    },
+    noBottomMargin: {
+        marginBottom: 0 + "px"
+    }
 }

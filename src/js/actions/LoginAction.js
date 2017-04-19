@@ -18,7 +18,7 @@ export function login(data) {
                 if(resolved.data.reason === "User not found") {
                     alert("User not found!");
                 }
-                if(resolved.data.reason === "Invalid password") {
+                else if(resolved.data.reason === "Invalid password") {
                     alert("Invalid password");
                 }
                 else if(

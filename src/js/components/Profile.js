@@ -381,7 +381,8 @@ handleBan = () => {
                     {this.createTournamentButton()}
                     {this.createBanButton()}
                 </div>
-                <FormGroup>
+                <br></br>
+                <FormGroup style={styles.clear}>
                   <ControlLabel>Name: </ControlLabel>
                   {' '}
                   <FormControl style={this.state.formControlStyle}
@@ -470,7 +471,11 @@ const styles = {
     floatLeft: {
         display: "block",
         float: "left",
-        marginBottom: 2 + "%"
+        marginBottom: 2 + "%",
+        marginLeft: 1 + "rem"
+    },
+    clear: {
+        clear: "both"
     },
     banFlag: {
         color: "red",

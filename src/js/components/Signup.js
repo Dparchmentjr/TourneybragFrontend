@@ -8,7 +8,6 @@
 import React from "react";
 import {Button, ControlLabel, FormControl, FormGroup, HelpBlock, Modal, Navbar} from "react-bootstrap";
 import {userSignupRequest} from "../actions/SignupActions";
-import {login} from "../actions/LoginAction";
 import {connect} from "react-redux";
 import validator from "validator";
 import {isEmpty} from "lodash";
